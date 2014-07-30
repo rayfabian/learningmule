@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jdbc-ee="http://www.mulesoft.org/schema/mule/ee/jdbc" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="EE-3.4.1" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/jdbc http://www.mulesoft.org/schema/mule/ee/jdbc/current/mule-jdbc-ee.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.1/mule-http.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/3.1/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd">
+    <jdbc-ee:connector name="jdbcConnector" dataSource-ref="MySQL_Data_Source" validateConnections="false"  queryTimeout="10" pollingFrequency="10000" doc:name="JDBC"> 
+        <jdbc-ee:query key="Songs" value="SELECT * FROM Songs"></jdbc-ee:query>  
+    </jdbc-ee:connector>
+    <jdbc-ee:mysql-data-source name="MySQL_Data_Source" user="root" password="123456" url="jdbc:mysql://localhost:3306/mysongs" transactionIsolation="UNSPECIFIED" doc:name="MySQL Data Source"></jdbc-ee:mysql-data-source>
+    <flow name="flows1Flow1" doc:name="flows1Flow1"> 
+        <jdbc-ee:inbound-endpoint queryKey="Songs" connector-ref="jdbcConnector" doc:name="JDBC"></jdbc-ee:inbound-endpoint>  
+        <mulexml:object-to-xml-transformer doc:name="Object-to-Xml"></mulexml:object-to-xml-transformer>  
+        <file:outbound-endpoint path="/Users/ray.fabian/xmlsongs" doc:name="File"></file:outbound-endpoint>  
+    </flow>
+
+</mule>
