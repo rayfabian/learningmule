@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ajax="http://www.mulesoft.org/schema/mule/ajax" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/ajax http://www.mulesoft.org/schema/mule/ajax/current/mule-ajax.xsd">
+  <!--  http://localhost:8090/SpellChecker.html -->
+    <ajax:connector name="AjaxConnector" serverUrl="http://127.0.0.1:8090/" resourceBase="src/main/app/docroot" jsonCommented="true" doc:name="Ajax"/>
+    <flow name="spellcheckerFlow1" doc:name="spellcheckerFlow1">
+        <ajax:inbound-endpoint channel="/services/echo" responseTimeout="10000" doc:name="Ajax" connector-ref="AjaxConnector"/>
+        <mulexml:object-to-xml-transformer doc:name="Object to XML"/>
+        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT" xsl-file="src/main/resources/transform.xsl"/>
+        <http:outbound-endpoint exchange-pattern="request-response" host="spellcheck-service.cloudhub.io" port="80" method="POST" doc:name="HTTP" contentType="text/xml" path="spellcheck"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+    </flow>
+</mule>
