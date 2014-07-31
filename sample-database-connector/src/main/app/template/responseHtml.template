@@ -1,0 +1,25 @@
+<html>
+	<body>
+		<table>
+		<tr>
+			<th>title</th>
+			<th>Album</th>
+			<th>Artist</th>
+			<th>URL</th>
+		</tr>
+		<tr>
+		  <!--using parse template in mule -->
+			<td>#[payload['title']]</td>
+			<td>#[payload['album']]</td>
+			<td>#[payload['artist']]</td>
+			<td>#[payload['url']]</td>
+		</tr>
+		</table>
+		
+	</body>
+</html>
+
+
+
+
+

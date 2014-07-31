@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jetty="http://www.mulesoft.org/schema/mule/jetty"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/jetty http://www.mulesoft.org/schema/mule/jetty/current/mule-jetty.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+  <!-- deploy war file in webapps directory
+  	 the sample mvc project can be access using 
+  	 http://localhost:8089/sample-spring-mvc/
+   -->
+   <jetty:connector name="jettyConnector">
+		<jetty:webapps directory="${app.home}/webapps" port="8089" />
+	</jetty:connector>
+	<flow name="jettyinsideFlow1" doc:name="jettyinsideFlow1">
+		<jetty:inbound-endpoint exchange-pattern="request-response"
+			address="http://localhost:8090/hello" mimeType="text/plain" doc:name="Jetty" />
+		<logger message="Param name is #[header:INBOUND:name]" level="INFO"
+			doc:name="Logger" />
+		<set-payload value="Hello #[header:INBOUND:name]!"
+			doc:name="Set Payload" />
+	</flow>
+	
+	<!-- deploying static files http://localhost:8090/static/ -->
+	<flow name="jettystatic" doc:name="jettystatic">
+		<jetty:inbound-endpoint exchange-pattern="request-response"
+			address="http://localhost:8090/static" doc:name="Jetty" />
+		<http:static-resource-handler
+			resourceBase="${app.home}/www" defaultFile="index.html" doc:name="HTTP Static Resource Handler"/>
+	</flow>
+	
+
+
+</mule>

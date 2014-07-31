@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <db:mysql-config name="MySQL_Configuration" host="localhost" port="3306" user="root" password="123456" database="mysongs" doc:name="MySQL Configuration"/>
+    <flow name="sample-database-connectorFlow1" doc:name="sample-database-connectorFlow1">
+        <poll doc:name="Poll">
+            <fixed-frequency-scheduler frequency="10000"/>
+            <db:select config-ref="MySQL_Configuration" doc:name="Database">
+                <db:dynamic-query><![CDATA[Select * from songs]]></db:dynamic-query>
+            </db:select>
+        </poll>
+        <foreach doc:name="For Each">
+            <parse-template location="${app.home}/template/responsehtml.template" doc:name="Parse Template"/>
+            <file:outbound-endpoint path="${output_directory}" responseTimeout="10000" doc:name="File" mimeType="text/html"
+             outputPattern="#[message.id].html"/>
+        </foreach>
+    </flow>
+
+</mule>
