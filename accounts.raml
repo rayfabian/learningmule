@@ -1,0 +1,77 @@
+#%RAML 0.8
+title: accounts
+version: v.01
+mediaType: application/json
+#baseUri: http://server/api/{version}
+baseUri: http://mocksvc.mulesoft.com/mocks/65ecd47a-a4de-4ab3-83e1-f6d9adbd2c39/api/{version}
+documentation:
+  - title: Account API
+    content: Use for service accounts
+/accounts:
+  displayName: Accounts
+  /{id}:
+    displayName: User
+    get:
+      description: Retrieve account balance by Id
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "$schema": "http://json-schema.org/draft-04/schema#",
+                  "type": "object",
+                  "properties": {
+                      "accountBalance": {
+                          "type": "number"
+                      },
+                      "debtBalance": {
+                          "type": "number"
+                      },
+                      "color": {
+                          "type": "string"
+                      },
+                      "connectionStatus": {
+                          "type": "string"
+                      },
+                      "lastPayment": {
+                          "type": "number"
+                      },
+                      "lastPaymentTimestamp": {
+                          "type": "string"
+                      },
+                      "devices": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "icp": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+                }
+              example: |
+                 {
+                  "accountBalance": 22.16,
+                  "debtBalance": 0,
+                  "color": "green",
+                  "connectionStatus": "Connected",
+                  "lastPayment": 20,
+                  "lastPaymentTimestamp": "at 6:45 PM on 5/08/2014",
+                    "devices": [
+                      {
+                          "id": "61025333670AAA017"
+                      }
+                  ]
+                  }
+        404:
+          description: Not Found
+        400:
+          description: Bad Request
+        403:
+          description: Forbidden
+        500:
+          description: Internal Server Error
